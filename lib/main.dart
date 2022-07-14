@@ -77,13 +77,13 @@ class _CalcState extends State<Calc> {
   void _update(String val) {
     setState(() {
       _val = val;
-      _res = evaluate('('+_val+')');
+      _res = evaluate('('+_val+')', deg);
       _disp = gen(_val);
     });
   }
 
   //...Key Preset.........................//
-  Widget _key(String char, String value, Color color, {ck = false}) {
+  Widget _key(String char, String value, Color color) {
     return Expanded(
       flex: 1,
       child: GestureDetector(
@@ -115,7 +115,6 @@ class _CalcState extends State<Calc> {
             else {
               _val += value;
             }
-            if(ck && deg) {_val += "(p/180)*";}
           });
           _update(_val);
         },
@@ -354,9 +353,9 @@ class _CalcState extends State<Calc> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        _key("sin", (_val=='' || !"0123456789".contains(_val[_val.length-1]))?"s(":"*s(", keycolornum, ck: true),
-                        _key("cos", (_val=='' || !"0123456789".contains(_val[_val.length-1]))?"c(":"*c(", keycolornum, ck: true),
-                        _key("tan", (_val=='' || !"0123456789".contains(_val[_val.length-1]))?"t(":"*t(", keycolornum, ck: true),
+                        _key("sin", (_val=='' || !"0123456789".contains(_val[_val.length-1]))?"s(":"*s(", keycolornum),
+                        _key("cos", (_val=='' || !"0123456789".contains(_val[_val.length-1]))?"c(":"*c(", keycolornum),
+                        _key("tan", (_val=='' || !"0123456789".contains(_val[_val.length-1]))?"t(":"*t(", keycolornum),
                         _key("pi", "p", keycolorop),
                         _key("e", "e", keycolorop),
                       ],

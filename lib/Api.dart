@@ -19,7 +19,7 @@ String roundup(double d) {
 
 //...Calculation.........................//
 
-String evaluate(String _eqn) {
+String evaluate(String _eqn, d) {
   List _stack = [];
   List _op = [];
   Map _prelist = {
@@ -81,15 +81,15 @@ String evaluate(String _eqn) {
             _res = _num2 - _num1;
             break;
           case 's':
-            _res = sin(_num1);
+            _res = (d)?sin((pi*(_num1/180))):sin(_num1);
             _u = false;
             break;
           case 'c':
-            _res = cos(_num1);
+            _res = (d)?cos((pi*(_num1/180))):cos(_num1);
             _u = false;
             break;
           case 't':
-            _res = tan(_num1);
+            _res = (d)?tan((pi*(_num1/180))):tan(_num1);
             _u = false;
             break;
         }
