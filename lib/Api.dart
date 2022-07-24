@@ -1,6 +1,16 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 
+//...Operational Variables..............//
+String val = '';
+String res = '0.0';
+String disp = '';
+bool deg = false;
+bool light = true;
+//data for history.......................//
+List<dynamic> expList = [];
+List<String> resList = [];
+
 //...Rounding............................//
 String roundup(double d) {
   int i = 0;
@@ -231,14 +241,14 @@ String gen(String _eqn) {
 Color boxcolor = Colors.blueGrey.shade400;
 Color bordercolor = Colors.black38;
 Color textcolor = Colors.white70;
-Color txtcol = Colors.green;
+Color txtcol = Colors.white;
 Color keycolornum = Colors.black;
 Color keycolorop = Colors.orange;
 Color keycolorbr = Colors.deepOrange;
 Color keycolorpt = Colors.blueGrey;
 Color keycolorresasc = Colors.blue.shade600;
 Color keycolorres = Colors.blue.shade900;
-var themeformat = const TextStyle(fontSize: 25.0, color: Colors.green,);
+var themeformat = TextStyle(fontSize: 25.0, color: txtcol);
 
 //...Change Mode.........................//
 void setCol(bool x) {
@@ -246,7 +256,7 @@ void setCol(bool x) {
     boxcolor = Colors.blueGrey.shade400;
     bordercolor = Colors.black38;
     textcolor = Colors.white70;
-    txtcol = Colors.green;
+    txtcol = Colors.white;
     keycolornum = Colors.black;
     keycolorop = Colors.orange;
     keycolorbr = Colors.deepOrange;

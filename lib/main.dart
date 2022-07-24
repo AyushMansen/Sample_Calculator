@@ -2,25 +2,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'Api.dart';
+import 'Calc.dart';
+import 'Setting.dart';
 
 //...Main App.............................//
-void main() => runApp(MyApp());
+void main() {
+  runApp(CalcScreen());
+}
 
 //...State Controller....................//
 class StateController {
   late void Function() stateCng;
+  late void Function() stateAppCng;
 }
 
-//...Operational Variables..............//
-String _val = '';
-String _res = '0.0';
-String _disp = '';
-bool deg = false;
+String _route = "Calc";
 
 
 //...App.................................//
-class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+class CalcScreen extends StatelessWidget {
+  CalcScreen({Key? key}) : super(key: key);
   final StateController stController = StateController();
 
   @override
@@ -38,13 +39,13 @@ class MyApp extends StatelessWidget {
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: Appbar(set: _setMode),
+          title: Appbar(stController, set: _setMode),
           toolbarHeight: 40,
         ),
         body: SizedBox(
           height: double.infinity,
           width: double.infinity,
-          child: Calc(controller: stController,),
+          child: Calc(stController),
         ),
       ),
     );
@@ -56,437 +57,94 @@ class MyApp extends StatelessWidget {
   }
 }
 
-//...Clc: App body..........................//
-class Calc extends StatefulWidget {
-  final StateController controller;
-  Calc({required this.controller, Key? key}) : super(key:key);
+class SetScreen extends StatelessWidget {
+  SetScreen({Key? key}) : super(key: key);
+  final StateController stController = StateController();
 
   @override
-  _CalcState createState() => _CalcState(controller);
-}
-
-class _CalcState extends State<Calc> {
-  _CalcState(StateController _controller) {
-    _controller.stateCng = stateCng;
-  }
-
-  //change state...........................//
-  void stateCng() => setState(() {});
-
-  //display update.........................//
-  void _update(String val) {
-    setState(() {
-      _val = val;
-      _res = evaluate('('+_val+')', deg);
-      _disp = gen(_val);
-    });
-  }
-
-  //...Key Preset.........................//
-  Widget _key(String char, String value, Color color) {
-    return Expanded(
-      flex: 1,
-      child: GestureDetector(
-        child: Container(
-          height: double.infinity,
-          padding: EdgeInsets.all(1.5),
-          child: Container(
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.all(Radius.circular(20.0)),
-            ),
-            child: Center(
-              child: Text(
-                char,
-                style: themeformat,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-        ),
-        onTap: () {
-          setState(() {
-            if(_val=='') {
-              _val += value;
-            }
-            else if("+-*/^".contains(value) && "+-*/^".contains(_val[_val.length-1])) {
-              _val = _val.substring(0, _val.length-1) + value;
-            }
-            else {
-              _val += value;
-            }
-          });
-          _update(_val);
-        },
-      ),
-    );
-  }
-
-  //...Key Graphics........................//
-  Widget _charkeydesign(String char, Color color) {
-    return Container(
-      height: double.infinity,
-      padding: EdgeInsets.all(1.5),
-      child: Container(
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-        ),
-        child: Center(
-          child: Text(
-            char,
-            style: themeformat,
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _iconkeydesign(IconData icon, Color color) {
-    return Container(
-      height: double.infinity,
-      padding: EdgeInsets.all(1.5),
-      child: Container(
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-        ),
-        child: Center(
-          child: Icon(icon, color: txtcol,),
-        ),
-      ),
-    );
-  }
-
-  //data for history.......................//
-  List<String> _expList = [];
-  List<String> _resList = [];
-
-  //History display........................//
-  Widget _tile(String _txt, String _sub, int id) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(width: 1, color:textcolor),
-          bottom: BorderSide(width: 1, color:textcolor),
-        ),
-      ),
-      child: ListTile(
-        title: Text(_txt, style:themeformat, overflow: TextOverflow.ellipsis,),
-        subtitle: Text(_sub, style: TextStyle(fontSize: 20, color: themeformat.color), overflow: TextOverflow.ellipsis,),
-        trailing: GestureDetector(
-          child: Icon(Icons.add_circle_outline_sharp, color: bordercolor,),
-          onTap: () {
-            setState(() {
-              _update(_val += _resList[id]);
-            });
-          },
-        ),
-        leading: GestureDetector(
-            child: Icon(Icons.remove_circle, color: bordercolor,),
-            onTap: () {
-              setState(() {
-                _resList.removeAt(id);
-                _expList.removeAt(id);
-              });
-            }
-        ),
-      ),
-    );
-  }
-
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          //----DISPLAY---------------------------
-          Expanded(
-            flex: 4,
-            child: Container(
-              decoration: BoxDecoration(
-                color: textcolor,
-                border: Border.all(
-                  color: bordercolor,
-                  width: 5.0,
-                ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                textDirection: TextDirection.ltr,
-                children: [
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        _disp,
-                        style: themeformat,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        _res,
-                        style: themeformat,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          //----HISTORY---------------------------
-          Expanded(
-            flex: 6,
-            child: Container(
-              decoration: BoxDecoration(
-                color: boxcolor,
-                border: Border.all(
-                  color: bordercolor,
-                  width: 5.0,
-                ),
-              ),
-              alignment: Alignment.center,
-              child: ListView.builder(
-                reverse: true,
-                itemBuilder:  (context, id) => _tile(_expList[id], _resList[id], id),
-                itemCount: _expList.length,
-              ),
-            ),
-          ),
-          //----KEYBOARD--------------------------
-          Expanded(
-            flex: 9,
-            child: Container(
-              decoration: BoxDecoration(
-                color: textcolor,
-                border: Border.all(
-                  color: bordercolor,
-                  width: 5.0,
-                ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  //~~~~ROW 1~~~~//
-                  Expanded(
-                    child:Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: GestureDetector(
-                            child: _iconkeydesign(Icons.backspace_rounded, boxcolor),
-                            onTap: () {
-                              setState(() {
-                                if(_val.length!=0) {
-                                  _val = _val.substring(0, _val.length-1);
-                                  _update(_val);
-                                }
-                                else {
-                                  _update("");
-                                }
-                              });
-                            },
-                            onLongPress: () {
-                              setState(() {
-                                _val = '';
-                                _disp = '';
-                                _res = '0.0';
-                              });
-                            },
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: GestureDetector(
-                            child: _iconkeydesign(Icons.arrow_circle_left_outlined, boxcolor),
-                            onTap: () {
-                              setState(() {null;});
-                            },
-                            onLongPress: () {
-                              setState(() {null;});
-                            },
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: GestureDetector(
-                            child: _iconkeydesign(Icons.arrow_circle_right_outlined, boxcolor),
-                            onTap: () {
-                              setState(() {null;});
-                            },
-                            onLongPress: () {
-                              setState(() {null;});
-                            },
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: GestureDetector(
-                            child: _charkeydesign('(', keycolorbr),
-                            onTap: () {
-                              setState(() {
-                                if(_val.length==0) {_val += '(';}
-                                else {_val += !("+-*/^(".contains(_val[_val.length-1]))?"*(":"(";}
-                                _update(_val);
-                              });
-                            },
-                            onLongPress: () {
-                              setState(() {null;});
-                            },
-                          ),
-                        ),
-                        _key(')', ')', keycolorbr),
-                      ],
-                    ),
-                  ),
-                  //~~~~ROW 2~~~~//
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        _key("sin", (_val=='' || !"0123456789".contains(_val[_val.length-1]))?"s(":"*s(", keycolornum),
-                        _key("cos", (_val=='' || !"0123456789".contains(_val[_val.length-1]))?"c(":"*c(", keycolornum),
-                        _key("tan", (_val=='' || !"0123456789".contains(_val[_val.length-1]))?"t(":"*t(", keycolornum),
-                        _key("pi", "p", keycolorop),
-                        _key("e", "e", keycolorop),
-                      ],
-                    ),
-                  ),
-                  //~~~~ROW 3~~~~//
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        _key("1", "1", keycolornum),
-                        _key("2", "2", keycolornum),
-                        _key("3", "3", keycolornum),
-                        _key("+", "+", keycolorop),
-                        _key("^", "^", keycolorop),
-                      ],
-                    ),
-                  ),
-                  //~~~~ROW 4~~~~//
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        _key("4", "4", keycolornum),
-                        _key("5", "5", keycolornum),
-                        _key("6", "6", keycolornum),
-                        _key("-", "-", keycolorop),
-                        _key("%", "%", keycolorop),
-                      ],
-                    ),
-                  ),
-                  //~~~~ROW 5~~~~//
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        _key("7", "7", keycolornum),
-                        _key("8", "8", keycolornum),
-                        _key("9", "9", keycolornum),
-                        _key("*", "*", keycolorop),
-                        Expanded(
-                          flex: 1,
-                          child: GestureDetector(
-                              child: _charkeydesign("Ans", keycolorres),
-                              onTap: () {
-                                setState(() {
-                                  _update(_val += _res);
-                                });
-                              }
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  //~~~~ROW 6~~~~//
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: GestureDetector(
-                              child: _charkeydesign((deg)?"DEG":"RAD", (deg)?keycolorresasc:keycolorres),
-                              onTap: () {
-                                setState(() {
-                                  deg = !deg;
-                                });
-                              }
-                          ),
-                        ),
-                        _key("0", "0", keycolornum),
-                        _key(".", (_val=='' || !"0123456789".contains(_val[_val.length-1]))?"0.":".", keycolorpt),
-                        _key("/", "/", keycolorop),
-                        Expanded(
-                          flex: 1,
-                          child: GestureDetector(
-                            child: _charkeydesign("=", keycolorres),
-                            onTap: () {
-                              setState(() {
-                                _update(_val);
-                                _expList.add(_val);
-                                _resList.add(_res);
-                                _val='';_disp='';
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )
-        ],
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    return MaterialApp(
+      title: 'Calculator',
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        primaryColor: Colors.grey,
+        //accentColor: Colors.red[200],
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Appbar(stController, set: _setMode),
+          toolbarHeight: 40,
+        ),
+        body: SizedBox(
+          height: double.infinity,
+          width: double.infinity,
+          child: Setting(stController, set: _setAppMode),
+        ),
       ),
     );
+  }
+
+  void _setAppMode(bool x) {
+    setCol(x);
+    stController.stateAppCng();
+  }
+
+  void _setMode(bool x) {
+    setCol(x);
+    stController.stateCng();
   }
 }
 
 //...Appbar...............................//
 class Appbar extends StatefulWidget {
   final ValueChanged<bool> set;
-  Appbar({required this.set, Key? key}) : super(key: key);
+  final StateController AController;
+  Appbar(this.AController, {required this.set, Key? key}) : super(key: key);
 
   @override
-  _AppbarState createState() => _AppbarState(st: set);
+  _AppbarState createState() => _AppbarState(AController, st: set);
 }
 
 class _AppbarState extends State<Appbar> {
   final ValueChanged<bool> st;
-  _AppbarState({required this.st});
-  bool light = true;
+  _AppbarState(StateController _controller, {required this.st}) {
+    _controller.stateAppCng = stateAppCng;
+  }
 
-  @override
+  void stateAppCng() => setState(() {});
+
+
   Widget build(BuildContext context) {
     return Row(
+      key: ValueKey<bool>(light),
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(
           flex: 1,
           child: IconButton(
-            icon: Icon(Icons.more_vert, color: (light)?Colors.black:Colors.white,),
-            tooltip: 'More',
+            icon: Icon(Icons.settings, color: (light)?Colors.black:Colors.white,),
+            tooltip: 'Settings',
             onPressed: () {
-              print('Pressed More');
+              print('Go To Settings');
+              if (_route == "Calc") {
+                _route = "Setting";
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SetScreen()),
+                );
+              }
+              else {
+                _route = "Calc";
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CalcScreen()),
+                );
+              }
             },
           ),
         ),
