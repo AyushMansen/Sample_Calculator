@@ -21,6 +21,6 @@ This is a basic Flutter project to familiarise with the programming language
 
 
 #### Note:
-The current provided apk has a custom app icon which is not provided in the repository folders.
-I followed the following tutorial to build and apply my icon
+The current provided apk has a custom app icon which is provided in the repository [asset images](assets/images/) folder.
+To apply custom app icons, followed the following YouTube tutorial
 - [Add App Icon](https://youtu.be/O9ChjwrZqns)
