@@ -26,10 +26,10 @@ class CalcScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+    read().then((value) async {
+      await value;
+      setCol(light);
+    });
     return MaterialApp(
       title: 'Calculator',
       theme: ThemeData(
@@ -63,6 +63,10 @@ class SetScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    read().then((value) async {
+      await value;
+      setCol(light);
+    });
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -112,14 +116,27 @@ class Appbar extends StatefulWidget {
 class _AppbarState extends State<Appbar> {
   final ValueChanged<bool> st;
   _AppbarState(StateController _controller, {required this.st}) {
+    read().then((value) async {
+      await value;
+      setState(() {});
+    });
     _controller.stateAppCng = stateAppCng;
   }
 
-  void stateAppCng() => setState(() {});
+  void stateAppCng() {
+    read().then((value) async {
+      await value;
+      setState(() {});
+    });
+  }
 
 
   Widget build(BuildContext context) {
-    return Row(
+    read().then((value) async {
+      await value;
+      setState(() {});
+    });
+    return Row (
       key: ValueKey<bool>(light),
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -130,7 +147,7 @@ class _AppbarState extends State<Appbar> {
             icon: Icon(Icons.settings, color: (light)?Colors.black:Colors.white,),
             tooltip: 'Settings',
             onPressed: () {
-              print('Go To Settings');
+              //print('Go To Settings');
               if (_route == "Calc") {
                 _route = "Setting";
                 Navigator.push(
@@ -159,13 +176,14 @@ class _AppbarState extends State<Appbar> {
         Expanded(
           flex: 1,
           child: IconButton(
-            icon: (light)?Icon(Icons.star, color: Colors.black,):Icon(Icons.star_border_outlined, color: Colors.white,),
+            icon: (light)?Icon(Icons.brightness_7_rounded, color: Colors.black,):Icon(Icons.brightness_3_rounded, color: Colors.white,),
             tooltip: 'Mode',
             onPressed: () {
               setState(() {
-                print('Changed Mode');
+                //print('Changed Mode');
                 light = !light;
                 st(light);
+                save();
               });
             },
           ),

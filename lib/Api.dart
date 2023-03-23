@@ -1,11 +1,15 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'dart:io';
+
+import 'package:path_provider/path_provider.dart';
+
 
 //...Operational Variables..............//
 String val = '';
 String res = '0.0';
 String disp = '';
-bool deg = false;
+bool rad = true;
 bool light = true;
 //data for history.......................//
 List<dynamic> expList = [];
@@ -29,7 +33,7 @@ String roundup(double d) {
 
 //...Calculation.........................//
 
-String evaluate(String _eqn, d) {
+String evaluate(String _eqn, bool d) {
   List _stack = [];
   List _op = [];
   Map _prelist = {
@@ -91,15 +95,15 @@ String evaluate(String _eqn, d) {
             _res = _num2 - _num1;
             break;
           case 's':
-            _res = (d)?sin((pi*(_num1/180))):sin(_num1);
+            _res = (d)?sin(_num1):sin((pi*(_num1/180)));
             _u = false;
             break;
           case 'c':
-            _res = (d)?cos((pi*(_num1/180))):cos(_num1);
+            _res = (d)?cos(_num1):cos((pi*(_num1/180)));
             _u = false;
             break;
           case 't':
-            _res = (d)?tan((pi*(_num1/180))):tan(_num1);
+            _res = (d)?tan(_num1):tan((pi*(_num1/180)));
             _u = false;
             break;
         }
@@ -235,6 +239,46 @@ String gen(String _eqn) {
     }
   }
   return _res;
+}
+
+//...Data Storage........................//
+Future<String> get _localPath async {
+  final calcDoc = await getApplicationDocumentsDirectory();
+  calcDoc.create(recursive: true);
+  return calcDoc.path;
+}
+
+Future<File> get _localFile async {
+  final path = await _localPath;
+  return File("$path/pref.txt");
+}
+
+Future<bool> read() async {
+  List<String> setting = List.empty(growable: true);
+  try {
+    final file = await _localFile;
+    (await file.readAsString()).split(",").forEach((element) => setting.add(element.trim()));
+    print(setting);
+    rad = (setting[0]=="true");
+    light = (setting[1]=="true");
+    setCol(light);
+    return true;
+  } catch (e) {
+    rad = true;
+    light = true;
+    return false;
+  }
+
+}
+
+void save() async {
+  try {
+    final file = await _localFile;
+    file.writeAsString("$rad, $light");
+    print("Saved $rad, $light");
+  } catch (e) {
+    null;
+  }
 }
 
 //...Theme Variables.....................//

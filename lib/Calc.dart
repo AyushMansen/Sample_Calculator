@@ -13,17 +13,26 @@ class Calc extends StatefulWidget {
 
 class _CalcState extends State<Calc> {
   _CalcState(StateController _controller) {
+    read().then((value) async {
+      await value;
+      setState(() {});
+    });
     _controller.stateCng = stateCng;
   }
 
   //change state...........................//
-  void stateCng() => setState(() {});
+  void stateCng() {
+    read().then((value) async {
+      await value;
+      setState(() {});
+    });
+  }
 
   //display update.........................//
   void _update(String val) {
     setState(() {
       val = val;
-      res = evaluate('('+val+')', deg);
+      res = evaluate('('+val+')', rad);
       disp = gen(val);
     });
   }
@@ -125,7 +134,7 @@ class _CalcState extends State<Calc> {
                 child: Text(_txt, style:themeformat, overflow: TextOverflow.ellipsis,),
               ),
               Expanded(
-                flex:1,
+                flex: 1,
                 child: Text(d?'DEG':'RAD', style: TextStyle(fontSize: 10, color: themeformat.color)),
               ),
             ]
@@ -153,6 +162,10 @@ class _CalcState extends State<Calc> {
   }
 
   Widget build(BuildContext context) {
+    read().then((value) async {
+      await value;
+      setState(() {});
+    });
     return Container(
       child: Column(
         children: [
@@ -379,10 +392,11 @@ class _CalcState extends State<Calc> {
                         Expanded(
                           flex: 1,
                           child: GestureDetector(
-                              child: _charkeydesign((deg)?"DEG":"RAD", (deg)?keycolorresasc:keycolorres),
+                              child: _charkeydesign((rad)?"RAD":"DEG", (rad)?keycolorresasc:keycolorres),
                               onTap: () {
                                 setState(() {
-                                  deg = !deg;
+                                  rad = !rad;
+                                  save();
                                   _update(val);
                                 });
                               }
@@ -399,7 +413,7 @@ class _CalcState extends State<Calc> {
                               if(val=="") {return;}
                               setState(() {
                                 _update(val);
-                                expList.add([disp,deg]);
+                                expList.add([disp,rad]);
                                 resList.add(res);
                                 val='';disp='';
                               });

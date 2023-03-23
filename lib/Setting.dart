@@ -14,12 +14,25 @@ class Setting extends StatefulWidget {
 class _SettingState extends State<Setting> {
   final ValueChanged<bool> st;
   _SettingState(StateController _controller, {required this.st}) {
+    read().then((value) async {
+      await value;
+      setState(() {});
+    });
     _controller.stateCng = stateCng;
   }
 
-  void stateCng() => setState(() {});
+  void stateCng() {
+    read().then((value) async {
+      await value;
+      setState(() {});
+    });
+  }
 
   Widget build(BuildContext context) {
+    read().then((value) async {
+      await value;
+      setState(() {});
+    });
     return Container(
       height: double.infinity,
       width: double.infinity,
@@ -40,6 +53,7 @@ class _SettingState extends State<Setting> {
                 onTap: () {
                   setState(() {
                     light = !light;
+                    save();
                     st(light);
                   });
                 }
