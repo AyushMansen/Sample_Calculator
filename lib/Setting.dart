@@ -72,6 +72,19 @@ class _SettingState extends State<Setting> {
             ),
           ),
           const Divider(),
+          ListTile(
+            title: GestureDetector(
+                child: Text("Clear History", style: themeformat,),
+                onTap: () {
+                  setState(() {
+                    expList = [];
+                    resList = [];
+                    st(light);
+                  });
+                }
+            ),
+          ),
+          const Divider(),
         ],
       ),
     );

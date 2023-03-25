@@ -115,7 +115,7 @@ class _CalcState extends State<Calc> {
   }
 
   //History display........................//
-  Widget _tile(String _txt, String _sub, int id, bool d) {
+  Widget _tile(String _txt, String _sub, int id, bool r) {
     return Container(
       decoration: BoxDecoration(
         border: Border(
@@ -135,7 +135,7 @@ class _CalcState extends State<Calc> {
               ),
               Expanded(
                 flex: 1,
-                child: Text(d?'DEG':'RAD', style: TextStyle(fontSize: 10, color: themeformat.color)),
+                child: Text(r?'RAD':'DEG', style: TextStyle(fontSize: 10, color: themeformat.color)),
               ),
             ]
         ),
@@ -409,8 +409,8 @@ class _CalcState extends State<Calc> {
                               if(val=="") {return;}
                               setState(() {
                                 _update(val);
-                                expList.add([disp,rad]);
-                                resList.add(res);
+                                expList.insert(0, [disp,rad]);
+                                resList.insert(0, res);
                                 val='';disp='';
                               });
                             },
