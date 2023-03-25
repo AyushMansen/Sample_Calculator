@@ -28,11 +28,8 @@ class _SettingState extends State<Setting> {
     });
   }
 
+  @override
   Widget build(BuildContext context) {
-    read().then((value) async {
-      await value;
-      setState(() {});
-    });
     return Container(
       height: double.infinity,
       width: double.infinity,
@@ -53,6 +50,21 @@ class _SettingState extends State<Setting> {
                 onTap: () {
                   setState(() {
                     light = !light;
+                    save();
+                    st(light);
+                  });
+                }
+            ),
+          ),
+          const Divider(),
+          ListTile(
+            title: Text("Angle Representation", style: themeformat,),
+            subtitle: Text((rad)?"Radian":"Degree", style: TextStyle(fontSize: 15, color: themeformat.color,),),
+            trailing: GestureDetector(
+                child: Icon((rad)?Icons.toggle_on:Icons.toggle_off_outlined, color: (light)?Colors.grey.shade800:Colors.white,),
+                onTap: () {
+                  setState(() {
+                    rad = !rad;
                     save();
                     st(light);
                   });

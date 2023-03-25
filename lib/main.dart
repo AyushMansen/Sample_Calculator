@@ -132,10 +132,6 @@ class _AppbarState extends State<Appbar> {
 
 
   Widget build(BuildContext context) {
-    read().then((value) async {
-      await value;
-      setState(() {});
-    });
     return Row (
       key: ValueKey<bool>(light),
       mainAxisAlignment: MainAxisAlignment.center,

@@ -162,10 +162,6 @@ class _CalcState extends State<Calc> {
   }
 
   Widget build(BuildContext context) {
-    read().then((value) async {
-      await value;
-      setState(() {});
-    });
     return Container(
       child: Column(
         children: [
